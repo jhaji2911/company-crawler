@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "company-crawler",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -14,9 +14,13 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@tabler/icons": "^3.3.0",
+    "axios": "^1.6.8",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue3-toastify": "^0.2.1",
+    "vuetify": "^3.6.3"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
@@ -35,8 +39,12 @@
     "npm-run-all2": "^6.1.2",
     "prettier": "^3.2.5",
     "typescript": "~5.4.0",
+    "unplugin-auto-import": "^0.17.5",
+    "unplugin-vue-components": "^0.27.0",
     "vite": "^5.2.8",
+    "vite-plugin-pages": "^0.32.1",
     "vite-plugin-vue-devtools": "^7.0.25",
+    "vite-plugin-vuetify": "^2.0.3",
     "vitest": "^1.4.0",
     "vue-tsc": "^2.0.11"
   }
