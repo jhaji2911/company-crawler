@@ -3,19 +3,12 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import { initORM } from "../../db";
 import { Client } from "../../entities";
+import { TCompany, TCompanyDetails } from "../../types";
+import { validate } from "class-validator";
 
-type TCompany = {
-  name: string;
-  link: string;
-};
+// TODO: optimization required 
 
-type TCompanyDetails = {
-  NAME: string;
-  CIN: string;
-  EMAIL?: string;
-  PINCODE?: string;
-  ADDRESS?: string;
-};
+
 
 const baseURL = "https://www.companydetails.in";
 
@@ -43,15 +36,29 @@ const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
        for(let i = 0; i < companyDetails.length; i++)
         {
-          const client = new Client({
+          const newClient = new Client({
             CIN: companyDetails[i]?.CIN || "",
             companyName: companyDetails[i]?.NAME || "",
             email: companyDetails[i]?.EMAIL || "",
             pinCode: companyDetails[i]?.PINCODE || "",
             address: companyDetails[i]?.ADDRESS || ""
           })
+
+          // make sure we only take valid clients into the database
+          const errors = await validate(newClient);
+          if (errors.length > 0) {
+            return reply.status(400).send({
+              success: false,
+              error: true,
+              message: "Validation failed",
+              errors: errors.map((error) => ({
+                property: error.property,
+                constraints: error.constraints,
+              })),
+            });
+          }
           
-          db.persist(client)
+          db.persist(newClient)
         }
         // flushing the request to free up in memory state
         await db.flush();
@@ -64,7 +71,7 @@ const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
        });
     } catch (err) {
       console.error("Error fetching company names:", err);
-      reply.status(500).send({ error: "Internal Server Error" });
+      reply.status(500).send({success:false, error: true, message: "Internal Server Error" });
     }
   });
 };

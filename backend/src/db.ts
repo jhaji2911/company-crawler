@@ -19,6 +19,7 @@ export async function initORM(): Promise<Services> {
 
   console.log('first block of INIT 🌒')
   if (cache !== null) {
+    console.log('Cache Found 🌝')
     // If cache is not null, return the cached services
   return cache;
 }
