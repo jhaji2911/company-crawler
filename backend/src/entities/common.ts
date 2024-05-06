@@ -3,11 +3,10 @@
  *
  */
 import { PrimaryKey, Property } from '@mikro-orm/core';
-const ulid = require("ulidx")
-
+import { v4 as uuidv4 } from 'uuid';
 export class BaseEntity {
   @PrimaryKey()
-  id: string = ulid();
+  id: string = uuidv4();
 
   @Property({ nullable: true, onCreate: () => new Date() })
   createdAt!: Date;

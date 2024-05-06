@@ -12,8 +12,8 @@
     "rimraf": "rimraf dist && mkdir dist",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
-    "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
-    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js"
+    "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\" ",
+    "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js -p 4001"
   },
   "keywords": [
     "backend",
@@ -39,11 +39,13 @@
     "fastify-cli": "^6.1.1",
     "fastify-plugin": "^4.0.0",
     "rimraf": "^5.0.5",
-    "ulidx": "^2.3.0"
+    "ulidx": "^2.3.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@mikro-orm/cli": "^6.2.4",
     "@types/node": "^20.4.4",
+    "@types/uuid": "^9.0.8",
     "c8": "^9.0.0",
     "concurrently": "^8.2.2",
     "fastify-tsconfig": "^2.0.0",

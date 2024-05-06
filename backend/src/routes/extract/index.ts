@@ -1,6 +1,8 @@
 import { FastifyPluginAsync } from "fastify";
 import axios from "axios";
 import * as cheerio from "cheerio";
+import { initORM } from "../../db";
+import { Client } from "../../entities";
 
 type TCompany = {
   name: string;
@@ -18,16 +20,48 @@ type TCompanyDetails = {
 const baseURL = "https://www.companydetails.in";
 
 const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+// using fork we are instantiating a new separate instance of the ORM for each request, this is to prevent any potential issues with concurrent requests and database locking.
+  const db =  (await initORM()).em.fork()
   fastify.get("/", async (request, reply) => {
     try {
       const html = await fetchHTML(`${baseURL}/latest-registered-company-mca`);
       const companies = extractCompanies(html);
 
-      const companyDetails = await Promise.all(
-        companies.map(fetchCompanyDetails)
+      const companyDetailsPromises = companies.map((company) =>
+        fetchCompanyDetails(company).catch((err) => {
+          console.error(
+            `Error fetching details for company ${company.name}:`,
+            err
+          );
+          return null; // Return null if there's an error
+        })
       );
 
-      reply.send({ companyDetails });
+      const companyDetails = (await Promise.all(companyDetailsPromises)).filter(
+        (details) => details !== null
+      );
+
+       for(let i = 0; i < companyDetails.length; i++)
+        {
+          const client = new Client({
+            CIN: companyDetails[i]?.CIN || "",
+            companyName: companyDetails[i]?.NAME || "",
+            email: companyDetails[i]?.EMAIL || "",
+            pinCode: companyDetails[i]?.PINCODE || "",
+            address: companyDetails[i]?.ADDRESS || ""
+          })
+          
+          db.persist(client)
+        }
+        // flushing the request to free up in memory state
+        await db.flush();
+
+
+      reply.send({ 
+        success: true,
+        error: false,
+        message: 'Extracted data inserted in db'
+       });
     } catch (err) {
       console.error("Error fetching company names:", err);
       reply.status(500).send({ error: "Internal Server Error" });
@@ -42,16 +76,26 @@ async function fetchHTML(url: string): Promise<string> {
 
 function extractCompanies(html: string): TCompany[] {
   const $ = cheerio.load(html);
-  return $("a.fs-6").map((i, elem) => ({
+  return $("a.fs-6")
+    .map((i, elem) => ({
       name: $(elem).text(),
       link: $(elem).attr("href") ?? "",
-  })).get();
+    }))
+    .get();
 }
 
-async function fetchCompanyDetails(company: TCompany): Promise<TCompanyDetails> {
+async function fetchCompanyDetails(
+  company: TCompany
+): Promise<TCompanyDetails> {
   const html = await fetchHTML(`${baseURL}${company.link}`);
   const $$ = cheerio.load(html);
-  const companyInfo: TCompanyDetails = { NAME: company.name, CIN: "", EMAIL: "", PINCODE: "", ADDRESS: "" };
+  const companyInfo: TCompanyDetails = {
+    NAME: company.name,
+    CIN: "",
+    EMAIL: "",
+    PINCODE: "",
+    ADDRESS: "",
+  };
 
   $$(".DESC b").each((i, elem) => {
     const value = $$(elem).text().trim();
@@ -63,10 +107,10 @@ async function fetchCompanyDetails(company: TCompany): Promise<TCompanyDetails> 
         companyInfo.EMAIL = value;
         break;
       case 8:
-      const addressMatch = value.match(/^.+? IN\b/);
-      const pincodeMatch = value.match(/\b\d{6}\b/);
-        companyInfo.ADDRESS = addressMatch ? addressMatch[0] : '';
-        companyInfo.PINCODE = pincodeMatch ? pincodeMatch[0] : '';
+        const addressMatch = value.match(/^.+? IN\b/);
+        const pincodeMatch = value.match(/\b\d{6}\b/);
+        companyInfo.ADDRESS = addressMatch ? addressMatch[0] : "";
+        companyInfo.PINCODE = pincodeMatch ? pincodeMatch[0] : "";
         break;
     }
   });

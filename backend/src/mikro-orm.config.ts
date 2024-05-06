@@ -4,6 +4,7 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 // import { SeedManager } from '@mikro-orm/seeder';
  import { Migrator } from '@mikro-orm/migrations';
 import { existsSync, readFileSync } from 'node:fs';
+import { entities } from './entities';
 
 const options = {} as Options<PostgreSqlDriver>;
 
@@ -25,7 +26,7 @@ export default defineConfig({
   host: process.env.DB_HOST || 'localhost', // replace with your database host
   port: 5432, // replace with your database port
   // folder based discovery setup, using common filename suffix
-  entities: ['dist/**/*.entity.js'],
+  entities,
   entitiesTs: ['src/**/*.entity.ts'],
   // enable debug mode to log SQL queries and discovery information
   debug: process.env.NODE_ENV !== 'production',

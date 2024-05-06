@@ -5,7 +5,8 @@ import fastifyCors from '@fastify/cors';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import { initORM } from './db';
-import { Client } from './entities/client'; // Import your entities here
+
+
 
 export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
 
@@ -15,16 +16,8 @@ const options: AppOptions = {} // Pass --options via CLI arguments in command to
 const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
   // Custom code can be placed here
 
-// Define the 'ready' event listener with an async function
-
-  // Initialize ORM with the 'Client' entity
-  await initORM({
-  entities: [Client]
-  });
-
-
-// Emit the 'ready' event to trigger the listener
-
+ await initORM()
+  
   fastify.register(fastifyCors, {
     origin: true, // Reflect the request origin as the allowed CORS origin
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Allow these HTTP methods
@@ -37,7 +30,7 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
             description: "Search through your favorite company, add new company and update them too",
             version: "1.0.0",
         },
-        host: "localhost:3000", // Added port 3000 here
+        host: "localhost:4001", // Added port 4001 here
         schemes: ["http", "https"],
         consumes: ["application/json"],
         produces: ["application/json"],
@@ -64,7 +57,10 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
     options: opts
   });
 
+
+  console.log("Server Ready 🚀");
 };
 
 export default app;
-export { app, options }
+export { app, options };
+
