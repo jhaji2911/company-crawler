@@ -5,22 +5,25 @@ import fastifyCors from '@fastify/cors';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import { initORM } from './db';
-
-
 import { Client } from './entities/client'; // Import your entities here
 
 export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
 
 const options: AppOptions = {} // Pass --options via CLI arguments in command to enable these options.
 
+
 const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
   // Custom code can be placed here
 
+// Define the 'ready' event listener with an async function
+
+  // Initialize ORM with the 'Client' entity
+  await initORM({
+  entities: [Client]
+  });
 
 
-await initORM({
-    entities: [Client]
-});
+// Emit the 'ready' event to trigger the listener
 
   fastify.register(fastifyCors, {
     origin: true, // Reflect the request origin as the allowed CORS origin
