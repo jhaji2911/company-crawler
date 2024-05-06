@@ -1,26 +1,26 @@
-import { FastifyPluginAsync } from "fastify";
-import { initORM } from "../../db";
-import { Client } from "../../entities";
-import { validate } from "class-validator";
+import { FastifyPluginAsync } from 'fastify';
+import { initORM } from '../../db';
+import { Client } from '../../entities';
+import { validate } from 'class-validator';
 
 const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.post(
-    "/",
+    '/',
     {
       schema: {
-        consumes: ["application/json"],
+        consumes: ['application/json'],
         body: {
-          type: "object",
-          required: ["CIN", "companyName", "address", "pinCode", "email"],
+          type: 'object',
+          required: ['CIN', 'companyName', 'address', 'pinCode', 'email'],
           properties: {
-            CIN: { type: "string" },
-            companyName: { type: "string" },
-            address: { type: "string" },
-            pinCode: { type: "string" },
-            email: { type: "string" },
-          },
-        },
-      },
+            CIN: { type: 'string' },
+            companyName: { type: 'string' },
+            address: { type: 'string' },
+            pinCode: { type: 'string' },
+            email: { type: 'string' }
+          }
+        }
+      }
     },
     async (request, reply) => {
       const { CIN, companyName, address, pinCode, email } = request.body as {
@@ -37,7 +37,7 @@ const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         companyName,
         address,
         pinCode,
-        email,
+        email
       });
 
       // Validate client instance using class-validator
@@ -46,11 +46,11 @@ const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         return reply.status(400).send({
           success: false,
           error: true,
-          message: "Validation failed",
-          errors: errors.map((error) => ({
+          message: 'Validation failed',
+          errors: errors.map(error => ({
             property: error.property,
-            constraints: error.constraints,
-          })),
+            constraints: error.constraints
+          }))
         });
       }
 
@@ -62,25 +62,25 @@ const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         reply.send({
           success: true,
           error: false,
-          message: "Client added successfully",
-          data: newClient,
+          message: 'Client added successfully',
+          data: newClient
         });
       } catch (error: any) {
         // 23505 is a postgres error code indicating that a unique constraint was violated
-        if (error?.code === '23505') { 
+        if (error?.code === '23505') {
           reply.status(409).send({
-          success: false,
-          error: true,
-            message: "Client with the provided CIN already exists",
-        });
+            success: false,
+            error: true,
+            message: 'Client with the provided CIN already exists'
+          });
         } else {
           console.log(`Error in adding client ${error}`);
           reply.send({
             success: false,
             error: true,
-            message: "Failed to add client",
+            message: 'Failed to add client'
           });
-      }
+        }
       }
     }
   );

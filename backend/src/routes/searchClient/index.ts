@@ -1,22 +1,22 @@
-import { FastifyPluginAsync } from "fastify";
-import { initORM } from "../../db";
-import { Client } from "../../entities";
+import { FastifyPluginAsync } from 'fastify';
+import { initORM } from '../../db';
+import { Client } from '../../entities';
 const searchClient: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.get(
-    "/",
+    '/',
     {
       schema: {
-        consumes: ["application/json"],
+        consumes: ['application/json'],
         querystring: {
-          type: "object",
+          type: 'object',
           properties: {
-            companyName: { type: "string" },
-            CIN: { type: "string" },
-            email: { type: "string" },
+            companyName: { type: 'string' },
+            CIN: { type: 'string' },
+            email: { type: 'string' }
           },
-          required: [],
-        },
-      },
+          required: []
+        }
+      }
     },
     async (request, reply) => {
       const { companyName, CIN, email } = request.query as {
@@ -33,7 +33,7 @@ const searchClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           searchCriteria.$or = [
             { companyName: new RegExp('^' + companyName + '$', 'i') }, // full text match
             { companyName: new RegExp('^' + companyName, 'i') }, // startsWith
-            { companyName: new RegExp(companyName + '$', 'i') }, // endWith
+            { companyName: new RegExp(companyName + '$', 'i') } // endWith
           ];
         }
         if (CIN) searchCriteria.CIN = CIN;
@@ -44,22 +44,22 @@ const searchClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           return reply.status(404).send({
             success: false,
             error: true,
-            message: "No clients found",
+            message: 'No clients found'
           });
         }
 
         reply.send({
           success: true,
           error: false,
-          message: "Clients found",
-          data: clients,
+          message: 'Clients found',
+          data: clients
         });
       } catch (error: any) {
         console.log(`Error in searching clients: ${error}`);
         reply.send({
           success: false,
           error: true,
-          message: "Failed to search clients",
+          message: 'Failed to search clients'
         });
       }
     }

@@ -2,19 +2,24 @@ import { defineConfig, Options } from '@mikro-orm/core';
 import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 // import { SeedManager } from '@mikro-orm/seeder';
- import { Migrator } from '@mikro-orm/migrations';
+import { Migrator } from '@mikro-orm/migrations';
 import { existsSync, readFileSync } from 'node:fs';
 import { entities } from './entities';
 
 const options = {} as Options<PostgreSqlDriver>;
 
-if (process.env.NODE_ENV === 'production' && existsSync('./temp/metadata.json')) {
+if (
+  process.env.NODE_ENV === 'production' &&
+  existsSync('./temp/metadata.json')
+) {
   options.metadataCache = {
     enabled: true,
     // temp/metadata.json can be generated via `npx mikro-orm cache:generate --combine`
     options: {
-      data: JSON.parse(readFileSync('./temp/metadata.json', { encoding: 'utf8' })),
-    },
+      data: JSON.parse(
+        readFileSync('./temp/metadata.json', { encoding: 'utf8' })
+      )
+    }
   };
 }
 
@@ -35,5 +40,5 @@ export default defineConfig({
   // for highlighting the SQL queries
   highlighter: new SqlHighlighter(),
   extensions: [Migrator],
-  ...options,
+  ...options
 });

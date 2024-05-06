@@ -1,32 +1,32 @@
-import { FastifyPluginAsync } from "fastify";
-import { initORM } from "../../db";
-import { Client } from "../../entities";
-import { validate } from "class-validator";
+import { FastifyPluginAsync } from 'fastify';
+import { initORM } from '../../db';
+import { Client } from '../../entities';
+import { validate } from 'class-validator';
 
 const updateClient: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.put(
-    "/:id",
+    '/:id',
     {
       schema: {
-        consumes: ["application/json"],
+        consumes: ['application/json'],
         params: {
-          type: "object",
+          type: 'object',
           properties: {
-            id: { type: "string" },
+            id: { type: 'string' }
           },
-          required: ["id"],
+          required: ['id']
         },
         body: {
-          type: "object",
+          type: 'object',
           properties: {
-            CIN: { type: "string" },
-            companyName: { type: "string" },
-            address: { type: "string" },
-            pinCode: { type: "string" },
-            email: { type: "string" },
-          },
-        },
-      },
+            CIN: { type: 'string' },
+            companyName: { type: 'string' },
+            address: { type: 'string' },
+            pinCode: { type: 'string' },
+            email: { type: 'string' }
+          }
+        }
+      }
     },
     async (request, reply) => {
       const { id } = request.params as { id: string };
@@ -46,7 +46,7 @@ const updateClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           return reply.status(404).send({
             success: false,
             error: true,
-            message: "Client not found",
+            message: 'Client not found'
           });
         }
 
@@ -63,11 +63,11 @@ const updateClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           return reply.status(400).send({
             success: false,
             error: true,
-            message: "Validation failed",
-            errors: errors.map((error) => ({
+            message: 'Validation failed',
+            errors: errors.map(error => ({
               property: error.property,
-              constraints: error.constraints,
-            })),
+              constraints: error.constraints
+            }))
           });
         }
 
@@ -76,15 +76,15 @@ const updateClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         reply.send({
           success: true,
           error: false,
-          message: "Client updated successfully",
-          data: client,
+          message: 'Client updated successfully',
+          data: client
         });
       } catch (error: any) {
         console.log(`Error in updating client ${error}`);
         reply.send({
           success: false,
           error: true,
-          message: "Failed to update client",
+          message: 'Failed to update client'
         });
       }
     }

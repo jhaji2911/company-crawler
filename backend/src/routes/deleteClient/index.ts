@@ -1,20 +1,20 @@
-import { FastifyPluginAsync } from "fastify";
-import { initORM } from "../../db";
-import { Client } from "../../entities";
+import { FastifyPluginAsync } from 'fastify';
+import { initORM } from '../../db';
+import { Client } from '../../entities';
 const deleteClient: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.delete(
-    "/:id",
+    '/:id',
     {
       schema: {
-        consumes: ["application/json"],
+        consumes: ['application/json'],
         params: {
-          type: "object",
+          type: 'object',
           properties: {
-            id: { type: "string" },
+            id: { type: 'string' }
           },
-          required: ["id"],
-        },
-      },
+          required: ['id']
+        }
+      }
     },
     async (request, reply) => {
       const { id } = request.params as { id: string };
@@ -26,7 +26,7 @@ const deleteClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           return reply.status(404).send({
             success: false,
             error: true,
-            message: "Client not found",
+            message: 'Client not found'
           });
         }
 
@@ -35,14 +35,14 @@ const deleteClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         reply.send({
           success: true,
           error: false,
-          message: "Client deleted successfully",
+          message: 'Client deleted successfully'
         });
       } catch (error: any) {
         console.log(`Error in deleting client ${error}`);
         reply.send({
           success: false,
           error: true,
-          message: "Failed to delete client",
+          message: 'Failed to delete client'
         });
       }
     }

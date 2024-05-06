@@ -6,41 +6,44 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import { initORM } from './db';
 
+export interface AppOptions
+  extends FastifyServerOptions,
+    Partial<AutoloadPluginOptions> {}
 
+const options: AppOptions = {}; // Pass --options via CLI arguments in command to enable these options.
 
-export interface AppOptions extends FastifyServerOptions, Partial<AutoloadPluginOptions> {}
-
-const options: AppOptions = {} // Pass --options via CLI arguments in command to enable these options.
-
-
-const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
+const app: FastifyPluginAsync<AppOptions> = async (
+  fastify,
+  opts
+): Promise<void> => {
   // Custom code can be placed here
 
- await initORM()
-  
+  await initORM();
+
   fastify.register(fastifyCors, {
     origin: true, // Reflect the request origin as the allowed CORS origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Allow these HTTP methods
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'] // Allow these HTTP methods
   });
 
   const swaggerOptions = {
     swagger: {
       info: {
-            title: "Company-Crawler 🔎 APIs",
-            description: "Search through your favorite company, add new company and update them too",
-            version: "1.0.0",
-        },
-        host: "localhost:4001", // Added port 4001 here
-        schemes: ["http", "https"],
-        consumes: ["application/json"],
-        produces: ["application/json"],
-        tags: [{ name: "Default", description: "Default" }],
-    },
+        title: 'Company-Crawler 🔎 APIs',
+        description:
+          'Search through your favorite company, add new company and update them too',
+        version: '1.0.0'
+      },
+      host: 'localhost:4001', // Added port 4001 here
+      schemes: ['http', 'https'],
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      tags: [{ name: 'Default', description: 'Default' }]
+    }
   };
 
   const swaggerUiOptions = {
-    routePrefix: "/docs",
-    exposeRoute: true,
+    routePrefix: '/docs',
+    exposeRoute: true
   };
 
   // Register Swagger and Swagger UI
@@ -57,10 +60,8 @@ const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void>
     options: opts
   });
 
-
-  console.log("Server Ready 🚀");
+  console.log('Server Ready 🚀');
 };
 
 export default app;
 export { app, options };
-

@@ -1,27 +1,25 @@
-import { FastifyPluginAsync } from "fastify";
-import axios from "axios";
-import * as cheerio from "cheerio";
-import { initORM } from "../../db";
-import { Client } from "../../entities";
-import { TCompany, TCompanyDetails } from "../../types";
-import { validate } from "class-validator";
+import { FastifyPluginAsync } from 'fastify';
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import { initORM } from '../../db';
+import { Client } from '../../entities';
+import { TCompany, TCompanyDetails } from '../../types';
+import { validate } from 'class-validator';
 
-// TODO: optimization required 
+// TODO: optimization required
 
-
-
-const baseURL = "https://www.companydetails.in";
+const baseURL = 'https://www.companydetails.in';
 
 const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-// using fork we are instantiating a new separate instance of the ORM for each request, this is to prevent any potential issues with concurrent requests and database locking.
-  const db =  (await initORM()).em.fork()
-  fastify.get("/", async (request, reply) => {
+  // using fork we are instantiating a new separate instance of the ORM for each request, this is to prevent any potential issues with concurrent requests and database locking.
+  const db = (await initORM()).em.fork();
+  fastify.get('/', async (request, reply) => {
     try {
       const html = await fetchHTML(`${baseURL}/latest-registered-company-mca`);
       const companies = extractCompanies(html);
 
-      const companyDetailsPromises = companies.map((company) =>
-        fetchCompanyDetails(company).catch((err) => {
+      const companyDetailsPromises = companies.map(company =>
+        fetchCompanyDetails(company).catch(err => {
           console.error(
             `Error fetching details for company ${company.name}:`,
             err
@@ -31,47 +29,51 @@ const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       );
 
       const companyDetails = (await Promise.all(companyDetailsPromises)).filter(
-        (details) => details !== null
+        details => details !== null
       );
 
-       for(let i = 0; i < companyDetails.length; i++)
-        {
-          const newClient = new Client({
-            CIN: companyDetails[i]?.CIN || "",
-            companyName: companyDetails[i]?.NAME || "",
-            email: companyDetails[i]?.EMAIL || "",
-            pinCode: companyDetails[i]?.PINCODE || "",
-            address: companyDetails[i]?.ADDRESS || ""
-          })
+      for (let i = 0; i < companyDetails.length; i++) {
+        const newClient = new Client({
+          CIN: companyDetails[i]?.CIN || '',
+          companyName: companyDetails[i]?.NAME || '',
+          email: companyDetails[i]?.EMAIL || '',
+          pinCode: companyDetails[i]?.PINCODE || '',
+          address: companyDetails[i]?.ADDRESS || ''
+        });
 
-          // make sure we only take valid clients into the database
-          const errors = await validate(newClient);
-          if (errors.length > 0) {
-            return reply.status(400).send({
-              success: false,
-              error: true,
-              message: "Validation failed",
-              errors: errors.map((error) => ({
-                property: error.property,
-                constraints: error.constraints,
-              })),
-            });
-          }
-          
-          db.persist(newClient)
+        // make sure we only take valid clients into the database
+        const errors = await validate(newClient);
+        if (errors.length > 0) {
+          return reply.status(400).send({
+            success: false,
+            error: true,
+            message: 'Validation failed',
+            errors: errors.map(error => ({
+              property: error.property,
+              constraints: error.constraints
+            }))
+          });
         }
-        // flushing the request to free up in memory state
-        await db.flush();
 
+        db.persist(newClient);
+      }
+      // flushing the request to free up in memory state
+      await db.flush();
 
-      reply.send({ 
+      reply.send({
         success: true,
         error: false,
         message: 'Extracted data inserted in db'
-       });
+      });
     } catch (err) {
-      console.error("Error fetching company names:", err);
-      reply.status(500).send({success:false, error: true, message: "Internal Server Error" });
+      console.error('Error fetching company names:', err);
+      reply
+        .status(500)
+        .send({
+          success: false,
+          error: true,
+          message: 'Internal Server Error'
+        });
     }
   });
 };
@@ -83,10 +85,10 @@ async function fetchHTML(url: string): Promise<string> {
 
 function extractCompanies(html: string): TCompany[] {
   const $ = cheerio.load(html);
-  return $("a.fs-6")
+  return $('a.fs-6')
     .map((i, elem) => ({
       name: $(elem).text(),
-      link: $(elem).attr("href") ?? "",
+      link: $(elem).attr('href') ?? ''
     }))
     .get();
 }
@@ -98,13 +100,13 @@ async function fetchCompanyDetails(
   const $$ = cheerio.load(html);
   const companyInfo: TCompanyDetails = {
     NAME: company.name,
-    CIN: "",
-    EMAIL: "",
-    PINCODE: "",
-    ADDRESS: "",
+    CIN: '',
+    EMAIL: '',
+    PINCODE: '',
+    ADDRESS: ''
   };
 
-  $$(".DESC b").each((i, elem) => {
+  $$('.DESC b').each((i, elem) => {
     const value = $$(elem).text().trim();
     switch (i) {
       case 3:
@@ -116,8 +118,8 @@ async function fetchCompanyDetails(
       case 8:
         const addressMatch = value.match(/^.+? IN\b/);
         const pincodeMatch = value.match(/\b\d{6}\b/);
-        companyInfo.ADDRESS = addressMatch ? addressMatch[0] : "";
-        companyInfo.PINCODE = pincodeMatch ? pincodeMatch[0] : "";
+        companyInfo.ADDRESS = addressMatch ? addressMatch[0] : '';
+        companyInfo.PINCODE = pincodeMatch ? pincodeMatch[0] : '';
         break;
     }
   });
