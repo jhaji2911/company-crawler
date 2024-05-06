@@ -1,4 +1,5 @@
 import { join } from 'path';
+// eslint-disable-next-line import/default
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
 import { FastifyPluginAsync, FastifyServerOptions } from 'fastify';
 import fastifyCors from '@fastify/cors';
@@ -60,6 +61,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
     options: opts
   });
 
+  // eslint-disable-next-line no-console
   console.log('Server Ready 🚀');
 };
 

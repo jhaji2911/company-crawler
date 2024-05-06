@@ -16,7 +16,6 @@ const getAllClients: FastifyPluginAsync = async (fastify): Promise<void> => {
         data: clients
       });
     } catch (error) {
-      console.log(`Error in get all client route ${error}`);
       reply.send({
         success: false,
         error: true,

@@ -42,7 +42,6 @@ const getClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           data: client
         });
       } catch (error) {
-        console.log(`Error in getting client ${error}`);
         reply.send({
           success: false,
           error: true,

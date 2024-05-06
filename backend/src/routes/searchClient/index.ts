@@ -55,7 +55,6 @@ const searchClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           data: clients
         });
       } catch (error: any) {
-        console.log(`Error in searching clients: ${error}`);
         reply.send({
           success: false,
           error: true,

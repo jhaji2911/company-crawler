@@ -7,15 +7,15 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm run build:ts && tsc -p test/tsconfig.json && c8 node --test -r ts-node/register test/**/*.ts",
-    "start": "npm run build:ts && fastify start -l info dist/app.js",
-    "check:project": "npm run lint && npm run format && npm run build",
+    "test": "yarn build:ts && tsc -p test/tsconfig.json && c8 node --test -r ts-node/register test/**/*.ts",
+    "start": "yarn build:ts && fastify start -l info dist/app.js",
+    "check:project": "yarn lint && yarn format && yarn build:ts",
     "rimraf": "rimraf dist && mkdir dist",
     "build:ts": "tsc",
     "watch:ts": "tsc -w",
     "format": "prettier --write \"{src,{tests,mocks}}/**/*.{js,ts}\"",
     "lint": "eslint \"{src,{tests,mocks}}/**/*.{js,ts}\"",
-    "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\" ",
+    "dev": "yarn build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\" ",
     "dev:start": "fastify start --ignore-watch=.ts$ -w -l info -P dist/app.js -p 4001"
   },
   "keywords": [

@@ -1,5 +1,5 @@
 import { Entity, Index, Property, Unique } from '@mikro-orm/core';
-import { BaseEntity } from './common.js';
+import { BaseEntity } from './common';
 import { IsEmail, IsPostalCode, MaxLength, MinLength } from 'class-validator';
 
 @Entity({ tableName: 'clients' })

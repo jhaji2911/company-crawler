@@ -10,7 +10,7 @@ import { validate } from 'class-validator';
 
 const baseURL = 'https://www.companydetails.in';
 
-const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+const extract: FastifyPluginAsync = async (fastify): Promise<void> => {
   // using fork we are instantiating a new separate instance of the ORM for each request, this is to prevent any potential issues with concurrent requests and database locking.
   const db = (await initORM()).em.fork();
   fastify.get('/', async (request, reply) => {
@@ -19,11 +19,7 @@ const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       const companies = extractCompanies(html);
 
       const companyDetailsPromises = companies.map(company =>
-        fetchCompanyDetails(company).catch(err => {
-          console.error(
-            `Error fetching details for company ${company.name}:`,
-            err
-          );
+        fetchCompanyDetails(company).catch(() => {
           return null; // Return null if there's an error
         })
       );
@@ -66,14 +62,11 @@ const extract: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         message: 'Extracted data inserted in db'
       });
     } catch (err) {
-      console.error('Error fetching company names:', err);
-      reply
-        .status(500)
-        .send({
-          success: false,
-          error: true,
-          message: 'Internal Server Error'
-        });
+      reply.status(500).send({
+        success: false,
+        error: true,
+        message: 'Internal Server Error'
+      });
     }
   });
 };
@@ -116,7 +109,9 @@ async function fetchCompanyDetails(
         companyInfo.EMAIL = value;
         break;
       case 8:
+        // eslint-disable-next-line no-case-declarations
         const addressMatch = value.match(/^.+? IN\b/);
+        // eslint-disable-next-line no-case-declarations
         const pincodeMatch = value.match(/\b\d{6}\b/);
         companyInfo.ADDRESS = addressMatch ? addressMatch[0] : '';
         companyInfo.PINCODE = pincodeMatch ? pincodeMatch[0] : '';

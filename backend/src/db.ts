@@ -1,9 +1,6 @@
-import {
-  MikroORM,
-  EntityManager,
-  EntityRepository,
-  Options
-} from '@mikro-orm/core';
+/* eslint-disable no-console */
+// eslint-disable-next-line prettier/prettier
+import { MikroORM, EntityManager, EntityRepository } from '@mikro-orm/core';
 import { Client } from './entities/client';
 import config from './mikro-orm.config';
 

@@ -80,7 +80,6 @@ const updateClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           data: client
         });
       } catch (error: any) {
-        console.log(`Error in updating client ${error}`);
         reply.send({
           success: false,
           error: true,

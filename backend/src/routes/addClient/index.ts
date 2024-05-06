@@ -74,7 +74,6 @@ const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
             message: 'Client with the provided CIN already exists'
           });
         } else {
-          console.log(`Error in adding client ${error}`);
           reply.send({
             success: false,
             error: true,

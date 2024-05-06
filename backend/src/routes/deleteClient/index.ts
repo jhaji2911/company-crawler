@@ -38,7 +38,6 @@ const deleteClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           message: 'Client deleted successfully'
         });
       } catch (error: any) {
-        console.log(`Error in deleting client ${error}`);
         reply.send({
           success: false,
           error: true,
