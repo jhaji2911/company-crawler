@@ -37,7 +37,13 @@ const searchClient: FastifyPluginAsync = async (fastify): Promise<void> => {
           ];
         }
         if (CIN) searchCriteria.CIN = CIN;
-        if (email) searchCriteria.email = email;
+        if (email) {
+          searchCriteria.$or = [
+            { email: new RegExp('^' + email + '$', 'i') }, // full text match
+            { email: new RegExp('^' + email, 'i') }, // startsWith
+            { email: new RegExp(email + '$', 'i') } // endWith
+          ];
+        };
         const clients = await db.find(Client, searchCriteria, {
           fields: ['id', 'createdAt', 'companyName', 'CIN', 'email']
         });
