@@ -30,7 +30,7 @@ const authThemeMask = computed(() => {
 // check if we have data or  not before extracting
 onBeforeMount(async () => {
   const data = await getCount();
-  if (data.success) {
+  if (data?.count) {
     routeToDashboard()
   }
   else {

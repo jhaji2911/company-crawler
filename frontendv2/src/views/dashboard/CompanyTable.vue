@@ -15,7 +15,7 @@ const isLoading = ref(false)
 const companyName = ref('')
 const email = ref('')
 const CIN = ref('')
-const computedClients  = computed(() => store.CLIENTS)
+const computedClients  = computed(() => store.CLIENTS.length)
 const itemsPerPage = ref(10)
 const companyData = ref([{
   id: '',
@@ -47,7 +47,7 @@ const fetchAPI = async () => {
   await new Promise(resolve => setTimeout(resolve, 2000))
   const response = await search(companyName.value, email.value, CIN.value)
   if (response.success) {
-    companyData.value = response.data
+    companyData.value = response.data as never[]
     isLoading.value = false
   }
   else {
@@ -106,7 +106,7 @@ const deleteCompany = async (confirm: boolean) => {
 
 onMounted(fetchAPI)
 
-watch([companyName, email, CIN, computedClients.value.length], fetchAPI)
+watch([companyName, email, CIN, computedClients], fetchAPI)
 </script>
 
 <template>
@@ -129,10 +129,14 @@ watch([companyName, email, CIN, computedClients.value.length], fetchAPI)
       </template>
       <template #item.companyName="{ item }">
         <VTooltip open-on-focus location="top" activator="parent" :text="item?.companyName" :offset="-10" />
-        <h6 @click="fetchCompanyDetails(item.id)" style="cursor:pointer"
-          class="text-h6 font-weight-medium user-list-name">
-          {{ item?.companyName?.slice(0, 15) }}{{ item?.companyName?.length > 10 ? '...' : '' }}
-        </h6>
+        
+          <VChip
+          variant="outlined"
+          color="primary"
+          prepend-icon="ri-eye-line"
+          @click="fetchCompanyDetails(item.id)"
+        > {{ item?.companyName?.slice(0, 15) }}{{ item?.companyName?.length > 10 ? '...' : '' }}
+          </VChip>
       </template>
       <template #item.email="{ item }">
         <div class="text-capitalize text-high-emphasis">
