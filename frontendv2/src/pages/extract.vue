@@ -10,11 +10,14 @@ import { toast } from 'vue3-toastify'
 import { useRouter } from 'vue-router'
 
 const { extract, getCount } = useClientStore()
+const store = useClientStore()
 const router = useRouter()
 const isLoading = ref(false)
 
 
 const isExtracted = ref(false)
+
+const computedExtracted = computed(() => store.IS_EXTRACTED)
 
 const routeToDashboard = () => {
   router.push('/dashboard')
@@ -30,7 +33,9 @@ const authThemeMask = computed(() => {
 // check if we have data or  not before extracting
 onBeforeMount(async () => {
   const data = await getCount();
-  if (data?.count) {
+const {count } = data?.data
+
+  if (count || computedExtracted.value) {
     routeToDashboard()
   }
   else {
@@ -54,8 +59,6 @@ const extractData = async () => {
 </script>
 
 <template>
-  <!-- eslint-disable vue/no-v-html -->
-
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
     <VCard :loading="isLoading" class="auth-card pa-4 pt-7" min-width="300" max-width="448">
       <VCardItem class="justify-center">
@@ -94,38 +97,7 @@ const extractData = async () => {
 
     </VCard>
 
-    <!-- <v-card
-        v-if="isLoading"
-        append-icon="$close"
-        class="mx-auto"
-        elevation="16"
-        max-width="500"
-        title="Send a receipt"
-      >
-        <template v-slot:append>
-          <v-btn icon="$close" variant="text" @click="isLoading = false"></v-btn>
-        </template>
-
-        <v-divider></v-divider>
-
-       
-
-        <v-divider></v-divider>
-
-        <div class="pa-4 text-end">
-          <v-btn
-            class="text-none"
-            color="medium-emphasis"
-            min-width="92"
-            variant="outlined"
-            rounded
-            @click="isLoading = false"
-          >
-            Close
-          </v-btn>
-        </div>
-      </v-card> -->
-
+  
     <VImg class="auth-footer-start-tree d-none d-md-block" :src="authV1Tree" :width="250" />
 
     <VImg :src="authV1Tree2" class="auth-footer-end-tree d-none d-md-block" :width="350" />
