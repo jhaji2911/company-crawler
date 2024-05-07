@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 
 import App from '@/App.vue'
+
+import 'vue3-toastify/dist/index.css'
 import { registerPlugins } from '@core/utils/plugins'
 
 // Styles

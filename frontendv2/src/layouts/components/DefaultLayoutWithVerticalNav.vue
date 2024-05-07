@@ -43,7 +43,7 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
 
         <IconBtn
           class="me-2"
-          href="https://github.com/jhaji2911"
+          href="https://github.com/jhaji2911/company-crawler"
           target="_blank"
           rel="noopener noreferrer"
         >

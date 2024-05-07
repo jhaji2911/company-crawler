@@ -1,4 +1,7 @@
-import { type ToastContainerOptions } from 'vue3-toastify'
+import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify'
+
+import type { App } from 'vue'
+
 
 // https://vue3-toastify.js-bridge.com/api/container.html
 export const ToastifyOptions: ToastContainerOptions = {
@@ -8,4 +11,8 @@ export const ToastifyOptions: ToastContainerOptions = {
   autoClose: 3500,
   theme: 'colored',
   limit: 3,
+}
+
+export default function (app: App) {
+  app.use(Vue3Toastify,ToastifyOptions)
 }

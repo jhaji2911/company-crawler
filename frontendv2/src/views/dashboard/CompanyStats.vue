@@ -1,55 +1,61 @@
 <script setup lang="ts">
-const statistics = [
-  {
-    title: 'Companies',
-    stats: '543',
-    icon: 'ri-building-3-line',
-    color: 'primary',
-  },
-  {
-    title: 'Owners',
-    stats: '1200',
-    icon: 'ri-group-line',
-    color: 'success',
-  },
-  {
-    title: 'Product',
-    stats: '--',
-    icon: 'ri-macbook-line',
-    color: 'warning',
-  },
-]
+import { useClientStore } from '@/stores';
+
+// pinia store loses reactivity when destructed
+const Store = useClientStore()
+
+interface Props {
+  totalClients : number
+}
+
+
+
+const totalClientsRef = computed( () =>  Store.TOTAL_CLIENTS)
+const statistics = computed(() => {
+
+  if (totalClientsRef) {
+    return [
+      {
+        title: 'Companies',
+        stats: totalClientsRef,
+        icon: 'ri-building-3-line',
+        color: 'primary',
+      },
+      {
+        title: 'Owners',
+        stats: totalClientsRef,
+        icon: 'ri-group-line',
+        color: 'success',
+      },
+      {
+        title: 'Product',
+        stats: '--',
+        icon: 'ri-macbook-line',
+        color: 'warning',
+      },
+    ]
+  }
+})
+
+
 </script>
 
 <template>
   <VCard title="Stats">
     <template #subtitle>
       <p class="text-body-1 mb-0">
-        <span class="d-inline-block font-weight-medium text-high-emphasis">Total 543 companies registered</span> <span class="text-high-emphasis">😎</span> today
+        <span class="d-inline-block font-weight-medium text-high-emphasis">Total {{ totalClientsRef }} companies
+          registered</span> <span class="text-high-emphasis">😎</span> today
       </p>
     </template>
 
 
     <VCardText class="pt-10">
       <VRow>
-        <VCol
-          v-for="item in statistics"
-          :key="item.title"
-          cols="12"
-          sm="6"
-          md="3"
-        >
+        <VCol v-for="item in statistics" :key="item.title" cols="12" sm="6" md="3">
           <div class="d-flex align-center gap-x-3">
-            <VAvatar
-              :color="item.color"
-              rounded
-              size="40"
-              class="elevation-2"
-            >
-              <VIcon
-                size="24"
-                :icon="item.icon"
-              />
+            <VAvatar :color="item.color" rounded size="40" class="elevation-2">
+              <VIcon size="24" :icon="item.icon" />
             </VAvatar>
 
             <div class="d-flex flex-column">

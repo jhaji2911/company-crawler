@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 import AccountSettingsAccount from '@/views/pages/account-settings/AccountSettingsAccount.vue'
-import AccountSettingsNotification from '@/views/pages/account-settings/AccountSettingsNotification.vue'
-import AccountSettingsSecurity from '@/views/pages/account-settings/AccountSettingsSecurity.vue'
 
 const route = useRoute()
 
@@ -11,8 +9,6 @@ const activeTab = ref(route.params.tab)
 // tabs
 const tabs = [
   { title: 'Company', icon: 'ri-building-3-fill', tab: 'account' },
-  // { title: 'Security', icon: 'ri-lock-line', tab: 'security' },
-  // { title: 'Notifications', icon: 'ri-notification-3-line', tab: 'notification' },
 ]
 </script>
 
@@ -45,16 +41,6 @@ const tabs = [
       <VWindowItem value="account">
         <AccountSettingsAccount />
       </VWindowItem>
-
-      <!-- Security -->
-      <!-- <VWindowItem value="security">
-        <AccountSettingsSecurity />
-      </VWindowItem> -->
-
-      <!-- Notification -->
-      <!-- <VWindowItem value="notification">
-        <AccountSettingsNotification />
-      </VWindowItem> -->
     </VWindow>
   </div>
 </template>
