@@ -43,7 +43,7 @@ const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
       // Validate client instance using class-validator
       const errors = await validate(newClient);
       if (errors.length > 0) {
-        return reply.status(400).send({
+        return reply.send({
           success: false,
           error: true,
           message: 'Validation failed',
@@ -68,7 +68,7 @@ const addClient: FastifyPluginAsync = async (fastify): Promise<void> => {
       } catch (error: any) {
         // 23505 is a postgres error code indicating that a unique constraint was violated
         if (error?.code === '23505') {
-          reply.status(409).send({
+          reply.send({
             success: false,
             error: true,
             message: 'Client with the provided CIN already exists'

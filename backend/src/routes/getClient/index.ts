@@ -21,7 +21,7 @@ const getClient: FastifyPluginAsync = async (fastify): Promise<void> => {
       const { id } = request.params as { id?: string };
 
       if (!id) {
-        return reply.status(400).send({
+        return reply.send({
           success: false,
           error: true,
           message: 'clientId is required'

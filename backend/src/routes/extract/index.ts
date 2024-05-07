@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { FastifyPluginAsync } from 'fastify';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
@@ -6,12 +7,9 @@ import { Client } from '../../entities';
 import { TCompany, TCompanyDetails } from '../../types';
 import { validate } from 'class-validator';
 
-// TODO: optimization required
-
 const baseURL = 'https://www.companydetails.in';
 
 const extract: FastifyPluginAsync = async (fastify): Promise<void> => {
-  // using fork we are instantiating a new separate instance of the ORM for each request, this is to prevent any potential issues with concurrent requests and database locking.
   const db = (await initORM()).em.fork();
   fastify.get('/', async (request, reply) => {
     try {
@@ -19,11 +17,8 @@ const extract: FastifyPluginAsync = async (fastify): Promise<void> => {
       const companies = extractCompanies(html);
 
       const companyDetailsPromises = companies.map(company =>
-        fetchCompanyDetails(company).catch(() => {
-          return null; // Return null if there's an error
-        })
+        fetchCompanyDetails(company).catch(() => null)
       );
-
       const companyDetails = (await Promise.all(companyDetailsPromises)).filter(
         details => details !== null
       );
@@ -37,10 +32,9 @@ const extract: FastifyPluginAsync = async (fastify): Promise<void> => {
           address: companyDetails[i]?.ADDRESS || ''
         });
 
-        // make sure we only take valid clients into the database
         const errors = await validate(newClient);
         if (errors.length > 0) {
-          return reply.status(400).send({
+          return reply.send({
             success: false,
             error: true,
             message: 'Validation failed',
@@ -51,10 +45,16 @@ const extract: FastifyPluginAsync = async (fastify): Promise<void> => {
           });
         }
 
-        db.persist(newClient);
+        try {
+          await db.persistAndFlush(newClient);
+        } catch (err) {
+          return reply.status(500).send({
+            success: false,
+            error: true,
+            message: `Database persist error, ${err}`
+          });
+        }
       }
-      // flushing the request to free up in memory state
-      await db.flush();
 
       reply.send({
         success: true,
@@ -109,9 +109,7 @@ async function fetchCompanyDetails(
         companyInfo.EMAIL = value;
         break;
       case 8:
-        // eslint-disable-next-line no-case-declarations
         const addressMatch = value.match(/^.+? IN\b/);
-        // eslint-disable-next-line no-case-declarations
         const pincodeMatch = value.match(/\b\d{6}\b/);
         companyInfo.ADDRESS = addressMatch ? addressMatch[0] : '';
         companyInfo.PINCODE = pincodeMatch ? pincodeMatch[0] : '';

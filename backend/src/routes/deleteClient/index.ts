@@ -23,7 +23,7 @@ const deleteClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         const client = await db.findOne(Client, { id });
 
         if (!client) {
-          return reply.status(404).send({
+          return reply.send({
             success: false,
             error: true,
             message: 'Client not found'

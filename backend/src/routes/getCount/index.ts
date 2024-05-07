@@ -7,21 +7,20 @@ const getAllClients: FastifyPluginAsync = async (fastify): Promise<void> => {
     try {
       const orm = (await initORM()).em.fork();
       const repo = orm.getRepository(Client);
-      const clients = await repo.findAll({
-        fields: ['companyName', 'CIN', 'email']
-      });
-
+      const clientsCount = await repo.count();
       reply.send({
         success: true,
         error: false,
-        message: 'Clients fetched successfully',
-        data: clients
+        message: 'Clients count fetched successfully',
+        data: {
+          count: clientsCount
+        }
       });
     } catch (error) {
       reply.send({
         success: false,
         error: true,
-        message: 'Failed to fetch clients'
+        message: 'Failed to fetch clients count'
       });
     }
   });

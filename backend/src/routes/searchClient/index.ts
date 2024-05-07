@@ -38,10 +38,12 @@ const searchClient: FastifyPluginAsync = async (fastify): Promise<void> => {
         }
         if (CIN) searchCriteria.CIN = CIN;
         if (email) searchCriteria.email = email;
-        const clients = await db.find(Client, searchCriteria);
+        const clients = await db.find(Client, searchCriteria, {
+          fields: ['id', 'createdAt', 'companyName', 'CIN', 'email']
+        });
 
         if (clients.length === 0) {
-          return reply.status(404).send({
+          return reply.send({
             success: false,
             error: true,
             message: 'No clients found'
