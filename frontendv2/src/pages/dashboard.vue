@@ -2,9 +2,6 @@
 import QuickActions from '@/views/dashboard/QuickActions.vue'
 import CompanyStats from '@/views/dashboard/CompanyStats.vue'
 import CompanyTable from '@/views/dashboard/CompanyTable.vue'
-
-
-
 </script>
 
 <template>
@@ -20,14 +17,11 @@ import CompanyTable from '@/views/dashboard/CompanyTable.vue'
       cols="12"
       md="8"
     >
-      <CompanyStats
-      />
+      <CompanyStats />
     </VCol>
 
-
     <VCol cols="12">
-      <CompanyTable
-      />
+      <CompanyTable />
     </VCol>
   </VRow>
 </template>

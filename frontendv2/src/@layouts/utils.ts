@@ -3,7 +3,7 @@
  * @param hex
  */
 
-export const hexToRgb = (hex: string) => {
+export function hexToRgb(hex: string) {
 // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
   const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
 

@@ -3,7 +3,6 @@ import type { App } from 'vue'
 import { createPersistedStatePlugin } from 'pinia-plugin-persistedstate-2'
 import localforage from 'localforage'
 
-
 export const store = createPinia()
 
 store.use(

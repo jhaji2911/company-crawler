@@ -13,16 +13,16 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<Emit>()
 
-const updateModelValue = (val: boolean) => {
+function updateModelValue(val: boolean) {
   emit('update:isDialogVisible', val)
 }
 
-const onConfirmation = () => {
+function onConfirmation() {
   emit('confirm', true)
   updateModelValue(false)
 }
 
-const onCancel = () => {
+function onCancel() {
   emit('confirm', false)
   emit('update:isDialogVisible', false)
 }

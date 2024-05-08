@@ -33,7 +33,7 @@ watch(
 const isVerticalNavScrolled = ref(false)
 const updateIsVerticalNavScrolled = (val: boolean) => isVerticalNavScrolled.value = val
 
-const handleNavScroll = (evt: Event) => {
+function handleNavScroll(evt: Event) {
   isVerticalNavScrolled.value = (evt.target as HTMLElement).scrollTop > 0
 }
 </script>

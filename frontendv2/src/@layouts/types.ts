@@ -33,12 +33,12 @@ export interface LayoutConfig {
     popoverOffset?: OffsetOptions
   }
   icons: {
-    chevronDown: any
-    chevronRight: any
-    close: any
-    verticalNavPinned: any
-    verticalNavUnPinned: any
-    sectionTitlePlaceholder: any
+    chevronDown: never
+    chevronRight: never
+    close: never
+    verticalNavPinned: never
+    verticalNavUnPinned: never
+    sectionTitlePlaceholder: never
   }
 }
 

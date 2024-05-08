@@ -28,14 +28,16 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
           style="user-select: none;"
         >
           <!-- 👉 Search Trigger button -->
-          <!-- <IconBtn>
+          <!--
+            <IconBtn>
             <VIcon icon="ri-search-line" />
-          </IconBtn>
+            </IconBtn>
 
-          <span class="d-none d-md-flex align-center text-disabled">
+            <span class="d-none d-md-flex align-center text-disabled">
             <span class="me-3">Search</span>
             <span class="meta-key">&#8984;K</span>
-          </span> -->
+            </span>
+          -->
           <!-- TODO:  we will use vuekbd -->
         </div>
 
@@ -49,7 +51,6 @@ import UserProfile from '@/layouts/components/UserProfile.vue'
         >
           <VIcon icon="ri-github-fill" />
         </IconBtn>
-
 
         <NavbarThemeSwitcher class="me-2" />
 

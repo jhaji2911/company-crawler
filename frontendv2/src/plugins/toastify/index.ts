@@ -2,7 +2,6 @@ import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify'
 
 import type { App } from 'vue'
 
-
 // https://vue3-toastify.js-bridge.com/api/container.html
 export const ToastifyOptions: ToastContainerOptions = {
   position: 'bottom-right',
@@ -14,5 +13,5 @@ export const ToastifyOptions: ToastContainerOptions = {
 }
 
 export default function (app: App) {
-  app.use(Vue3Toastify,ToastifyOptions)
+  app.use(Vue3Toastify, ToastifyOptions)
 }

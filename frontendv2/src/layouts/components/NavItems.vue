@@ -3,14 +3,10 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue'
 </script>
 
 <template>
-
-  <VerticalNavLink :item="{
-    title: 'Analyze Companies',
-    to: '/dashboard',
-  }" />
-
-  
-
- 
-
+  <VerticalNavLink
+    :item="{
+      title: 'Analyze Companies',
+      to: '/dashboard',
+    }"
+  />
 </template>

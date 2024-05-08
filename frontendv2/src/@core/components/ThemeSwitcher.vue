@@ -9,7 +9,7 @@ const props = defineProps<{
 const { name: themeName, global: globalTheme } = useTheme()
 const { state: currentThemeName, next: getNextThemeName, index: currentThemeIndex } = useCycleList(props.themes.map(t => t.name), { initialValue: themeName })
 
-const changeTheme = () => {
+function changeTheme() {
   globalTheme.name.value = getNextThemeName()
 }
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 const avatarURI = 'https://api.dicebear.com/8.x/fun-emoji/svg?seed=NJ'
 </script>
 

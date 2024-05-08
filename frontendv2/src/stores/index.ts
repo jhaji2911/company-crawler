@@ -1,1 +1,1 @@
-export  { useClientStore } from './clients';
+export { useClientStore } from './clients'

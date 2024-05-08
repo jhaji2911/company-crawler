@@ -1,4 +1,3 @@
-
 export const routes = [
   { path: '/', redirect: '/extract' },
   {
@@ -9,7 +8,7 @@ export const routes = [
         path: 'dashboard',
         component: () => import('@/pages/dashboard.vue'),
       },
-      
+
     ],
   },
   {
@@ -20,7 +19,7 @@ export const routes = [
         path: 'extract',
         component: () => import('@/pages/extract.vue'),
       },
-       {
+      {
         path: '/:pathMatch(.*)*',
         component: () => import('@/pages/[...error].vue'),
       },

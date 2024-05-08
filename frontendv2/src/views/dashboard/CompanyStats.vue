@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { useClientStore } from '@/stores';
+import { useClientStore } from '@/stores'
 
 // pinia store loses reactivity when destructed
 const Store = useClientStore()
 
-interface Props {
-  totalClients : number
-}
+const totalClientsRef = computed(() => Store.TOTAL_CLIENTS)
 
-
-
-const totalClientsRef = computed( () =>  Store.TOTAL_CLIENTS)
 const statistics = computed(() => {
-
   if (totalClientsRef) {
     return [
       {
@@ -36,8 +30,6 @@ const statistics = computed(() => {
     ]
   }
 })
-
-
 </script>
 
 <template>
@@ -49,13 +41,26 @@ const statistics = computed(() => {
       </p>
     </template>
 
-
     <VCardText class="pt-10">
       <VRow>
-        <VCol v-for="item in statistics" :key="item.title" cols="12" sm="6" md="3">
+        <VCol
+          v-for="item in statistics"
+          :key="item.title"
+          cols="12"
+          sm="6"
+          md="3"
+        >
           <div class="d-flex align-center gap-x-3">
-            <VAvatar :color="item.color" rounded size="40" class="elevation-2">
-              <VIcon size="24" :icon="item.icon" />
+            <VAvatar
+              :color="item.color"
+              rounded
+              size="40"
+              class="elevation-2"
+            >
+              <VIcon
+                size="24"
+                :icon="item.icon"
+              />
             </VAvatar>
 
             <div class="d-flex flex-column">
