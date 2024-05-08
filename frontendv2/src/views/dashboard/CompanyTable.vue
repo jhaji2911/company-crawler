@@ -160,6 +160,7 @@ watch([companyName, email, CIN, computedClients], fetchAPI)
         />
 
         <VChip
+          :disabled="isLoading"
           variant="outlined"
           color="primary"
           prepend-icon="ri-eye-line"
@@ -180,6 +181,7 @@ watch([companyName, email, CIN, computedClients], fetchAPI)
           icon="ri-delete-bin-line"
           variant="tonal"
           color="error"
+          :disabled="isLoading"
           @click="onDeleteClick(item.companyName, item.id)"
         />
       </template>

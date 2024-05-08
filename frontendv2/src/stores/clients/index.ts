@@ -15,12 +15,13 @@ export const useClientStore = defineStore('clientStore', {
     TOTAL_CLIENTS: state => state.totalClients,
   },
   actions: {
-    async getCount(): Promise<SuccessCountResponse | ValidationErrorResponse> {
+    async getCount(): Promise<SuccessCountResponse> {
       const response = await axios.get('/getCount')
+      const { count } = await response.data?.data
 
-      this.totalClients = response.data?.data?.count || 0
+      this.totalClients = count || 0
 
-      return await response.data
+      return count
     },
     async  extract(): Promise<SuccessResponse | ValidationErrorResponse> {
       const response = await axios.get('/extract')

@@ -16,8 +16,6 @@ const isLoading = ref(false)
 
 const isExtracted = ref(false)
 
-const computedExtracted = computed(() => store.IS_EXTRACTED)
-
 function routeToDashboard() {
   router.push('/dashboard')
 }
@@ -31,10 +29,9 @@ const authThemeMask = computed(() => {
 
 // check if we have data or  not before extracting
 onBeforeMount(async () => {
-  await getCount()
-  
+ const count =  await getCount()
 
-  if (store.TOTAL_CLIENTS || computedExtracted.value)
+  if (count)
     routeToDashboard()
 })
 
@@ -50,6 +47,8 @@ async function extractData() {
     toast.error(response.message)
   }
 }
+
+const onExtractionText = () => isLoading.value ? 'Extracting..., please hold on.' : 'First, Extract the data!'
 </script>
 
 <template>
@@ -84,7 +83,7 @@ async function extractData() {
           size="100"
         />
 
-        <div class="text-h6 font-weight-bold">First, Extract the data!</div>
+        <div class="text-h6 font-weight-bold">{{ onExtractionText() }}</div>
       </VCardText>
 
       <VCardText

@@ -4,20 +4,20 @@ import { useClientStore } from '@/stores'
 // pinia store loses reactivity when destructed
 const Store = useClientStore()
 
-const totalClientsRef = computed(() => Store.TOTAL_CLIENTS)
+const totalClientsComputed = computed(() => Store.TOTAL_CLIENTS)
 
 const statistics = computed(() => {
-  if (totalClientsRef) {
+  if (totalClientsComputed) {
     return [
       {
         title: 'Companies',
-        stats: totalClientsRef,
+        stats: totalClientsComputed,
         icon: 'ri-building-3-line',
         color: 'primary',
       },
       {
         title: 'Owners',
-        stats: totalClientsRef,
+        stats: totalClientsComputed,
         icon: 'ri-group-line',
         color: 'success',
       },
@@ -36,7 +36,7 @@ const statistics = computed(() => {
   <VCard title="Stats">
     <template #subtitle>
       <p class="text-body-1 mb-0">
-        <span class="d-inline-block font-weight-medium text-high-emphasis">Total {{ totalClientsRef }} companies
+        <span class="d-inline-block font-weight-medium text-high-emphasis">Total {{ totalClientsComputed }} companies
           registered</span> <span class="text-high-emphasis">😎</span> today
       </p>
     </template>
