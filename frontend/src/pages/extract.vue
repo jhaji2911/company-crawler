@@ -10,13 +10,13 @@ import authV1Tree from '@images/pages/auth-v1-tree.png'
 import { useClientStore } from '@/stores'
 
 const { extract, getCount } = useClientStore()
-const store = useClientStore()
 const router = useRouter()
 const isLoading = ref(false)
 
 const isExtracted = ref(false)
 
-function routeToDashboard() {
+async function routeToDashboard() {
+  await getCount()
   router.push('/dashboard')
 }
 const vuetifyTheme = useTheme()
@@ -29,10 +29,10 @@ const authThemeMask = computed(() => {
 
 // check if we have data or  not before extracting
 onBeforeMount(async () => {
- const count =  await getCount()
+  const count = await getCount()
 
   if (count)
-    routeToDashboard()
+    await routeToDashboard()
 })
 
 async function extractData() {
